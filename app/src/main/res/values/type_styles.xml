@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base font root styles — dot-notation inheritance zorunlu -->
+    <style name="Outfit">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="RobotoMono">
+        <item name="android:fontFamily">monospace</item>
+    </style>
+
+    <!-- Display font styles (using system sans-serif as Outfit fallback) -->
+    <style name="Outfit.Bold">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Outfit.SemiBold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Outfit.Medium">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Outfit.Regular">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- Monospace font styles (system monospace as Roboto Mono fallback) -->
+    <style name="RobotoMono.Regular">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="RobotoMono.Bold">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Title styles -->
+    <style name="Text.Title.Large" parent="Outfit.Bold">
+        <item name="android:textSize">@dimen/text_size_5xl</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <style name="Text.Title.Medium" parent="Outfit.SemiBold">
+        <item name="android:textSize">@dimen/text_size_2xl</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <style name="Text.Title.Small" parent="Outfit.SemiBold">
+        <item name="android:textSize">@dimen/text_size_lg</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <!-- Body text styles -->
+    <style name="Text.Body.Large" parent="Outfit.Regular">
+        <item name="android:textSize">@dimen/text_size_base</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <style name="Text.Body.Medium" parent="Outfit.Regular">
+        <item name="android:textSize">@dimen/text_size_sm</item>
+        <item name="android:textColor">?colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="Text.Body.Small" parent="Outfit.Regular">
+        <item name="android:textSize">@dimen/text_size_xs</item>
+        <item name="android:textColor">?colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- Value styles (monospace) -->
+    <style name="Text.Value.Large" parent="RobotoMono.Bold">
+        <item name="android:textSize">@dimen/text_size_3xl</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <style name="Text.Value.Medium" parent="RobotoMono.Bold">
+        <item name="android:textSize">@dimen/text_size_xl</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <style name="Text.Value.Small" parent="RobotoMono.Bold">
+        <item name="android:textSize">@dimen/text_size_sm</item>
+        <item name="android:textColor">?colorOnSurfaceVariant</item>
+    </style>
+</resources>

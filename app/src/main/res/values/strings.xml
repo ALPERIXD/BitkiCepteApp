@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">BitkiCepte</string>
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_grafik">Grafikler</string>
+    <string name="nav_enerji">Enerji</string>
+    <string name="nav_surdurulebilirlik">Çevre</string>
+    <string name="nav_ayarlar">Ayarlar</string>
+    <string name="mode_manual">Manuel</string>
+    <string name="mode_auto">Otomatik</string>
+    <string name="mode_smart">Akıllı</string>
+    <string name="heater">Isıtıcı</string>
+    <string name="fan">Fan</string>
+    <string name="led">LED</string>
+    <string name="pump">Pompa</string>
+    <string name="temperature">Sıcaklık</string>
+    <string name="humidity">Nem</string>
+    <string name="soil_moisture">Toprak Nemi</string>
+    <string name="light">Işık</string>
+    <string name="solar_power">Güneş Enerjisi</string>
+    <string name="connect">Bağlan</string>
+    <string name="disconnect">Bağlantıyı Kes</string>
+    <string name="save">Kaydet</string>
+    <string name="esp32_ip">ESP32 IP Adresi</string>
+    <string name="esp32_port">Port</string>
+    <string name="connected">Bağlandı</string>
+    <string name="disconnected">Bağlantı Yok</string>
+    <string name="consumption">Tüketim</string>
+    <string name="production">Üretim</string>
+    <string name="savings">Tasarruf</string>
+    <string name="carbon_saved">Tasarruf Edilen CO₂</string>
+    <string name="tree_equivalent">Ağaç Eşdeğeri</string>
+</resources>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="?android:colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_16">
+
+        <!-- Header: Title + Connection Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/spacing_16">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="BitkiCepte"
+                android:textSize="@dimen/text_size_2xl"
+                android:textStyle="bold"
+                android:textColor="?colorPrimary" />
+
+            <TextView
+                android:id="@+id/tvConnectionStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bagli degil"
+                android:textSize="@dimen/text_size_sm"
+                android:textColor="?colorOnSurfaceVariant"
+                android:layout_marginEnd="@dimen/spacing_8" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConnect"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baglan" />
+
+        </LinearLayout>
+
+        <!-- Control Mode Toggle -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnManual"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Manuel" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAuto"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Otomatik" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSmart"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Akilli" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- Plant Profile Info -->
+        <TextView
+            android:id="@+id/tvPlantProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profil secilmedi"
+            android:textSize="@dimen/text_size_sm"
+            android:textColor="?colorPrimary"
+            android:layout_marginBottom="@dimen/spacing_8" />
+
+        <!-- Sensor Grid: 2x2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/spacing_12">
+
+            <!-- Row 1: Temp + Humidity -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/spacing_8">
+
+                <include
+                    android:id="@+id/cardTemp"
+                    layout="@layout/item_sensor_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_6" />
+
+                <include
+                    android:id="@+id/cardHum"
+                    layout="@layout/item_sensor_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_6" />
+
+            </LinearLayout>
+
+            <!-- Row 2: Soil + Light -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/cardSoil"
+                    layout="@layout/item_sensor_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_6" />
+
+                <include
+                    android:id="@+id/cardLight"
+                    layout="@layout/item_sensor_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_6" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Solar Panel Card with Wave Animation -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/solarCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16"
+            app:cardCornerRadius="@dimen/corner_large"
+            app:cardElevation="3dp"
+            app:strokeWidth="@dimen/card_stroke_width"
+            app:strokeColor="?colorOutline">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <!-- Wave Animation Background -->
+                <com.bitkicepte.bitkicepteapp.ui.components.SolarWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no" />
+
+                <!-- Sun Disk -->
+                <com.bitkicepte.bitkicepteapp.ui.components.SunDiskView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/spacing_16"
+                    android:importantForAccessibility="no" />
+
+                <!-- Solar Info Overlay -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/spacing_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Solar Guc"
+                        android:textSize="@dimen/text_size_xs"
+                        android:textColor="#FFFFFF"
+                        android:alpha="0.8" />
+
+                    <TextView
+                        android:id="@+id/tvSolarPower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0 W"
+                        android:textSize="@dimen/text_size_xl"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tvSolarDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--V / --A"
+                        android:textSize="@dimen/text_size_xs"
+                        android:fontFamily="monospace"
+                        android:textColor="#CCFFFFFF" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Smart Reason Banner -->
+        <TextView
+            android:id="@+id/tvSmartReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="@dimen/text_size_xs"
+            android:textColor="?colorSecondary"
+            android:layout_marginBottom="@dimen/spacing_8"
+            android:visibility="gone" />
+
+        <!-- Actuator Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16"
+            app:cardCornerRadius="@dimen/corner_large"
+            app:cardElevation="@dimen/card_elevation"
+            app:strokeWidth="@dimen/card_stroke_width"
+            app:strokeColor="?colorOutline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aktuatorler"
+                    android:textSize="@dimen/text_size_base"
+                    android:textStyle="bold"
+                    android:textColor="?colorOnSurface"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <include
+                    android:id="@+id/rowFan"
+                    layout="@layout/item_actuator_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_8" />
+
+                <include
+                    android:id="@+id/rowLed"
+                    layout="@layout/item_actuator_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <!-- Pump Row -->
+                <include
+                    android:id="@+id/rowPump"
+                    layout="@layout/item_actuator_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

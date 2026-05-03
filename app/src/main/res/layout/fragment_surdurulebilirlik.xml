@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_16">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Surdurulebilirlik"
+            android:textSize="@dimen/text_size_xl"
+            android:textStyle="bold"
+            android:textColor="?colorPrimary"
+            android:layout_marginBottom="@dimen/spacing_16" />
+
+        <!-- CO2 Hero Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16"
+            app:cardCornerRadius="@dimen/corner_large"
+            app:cardElevation="4dp"
+            app:strokeWidth="@dimen/card_stroke_width"
+            app:strokeColor="?colorOutline">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_hero_gradient" />
+
+                <com.bitkicepte.bitkicepteapp.ui.components.LeafMotifView
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:importantForAccessibility="no" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_24">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kacinilan CO2"
+                        android:textSize="@dimen/text_size_sm"
+                        android:textColor="#FFFFFF"
+                        android:alpha="0.6"
+                        android:layout_marginBottom="@dimen/spacing_8" />
+
+                    <TextView
+                        android:id="@+id/tvCo2Value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.000"
+                        android:textSize="@dimen/text_size_5xl"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="kg CO2"
+                        android:textSize="@dimen/text_size_base"
+                        android:textColor="#FFFFFF"
+                        android:alpha="0.8" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Tree Equivalent + Cost Savings Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/spacing_12">
+
+            <!-- Tree Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/spacing_6"
+                app:cardCornerRadius="@dimen/corner_medium"
+                app:cardElevation="@dimen/card_elevation"
+                app:strokeWidth="@dimen/card_stroke_width"
+                app:strokeColor="?colorOutline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agac Esdegeri"
+                        android:textSize="@dimen/text_size_xs"
+                        android:textColor="?colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/tvTreeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0000"
+                        android:textSize="@dimen/text_size_xl"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:textColor="?colorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="agac/yil"
+                        android:textSize="@dimen/text_size_xs"
+                        android:textColor="?colorOnSurfaceVariant" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Cost Savings Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_6"
+                app:cardCornerRadius="@dimen/corner_medium"
+                app:cardElevation="@dimen/card_elevation"
+                app:strokeWidth="@dimen/card_stroke_width"
+                app:strokeColor="?colorOutline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Maliyet Tasarrufu"
+                        android:textSize="@dimen/text_size_xs"
+                        android:textColor="?colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/tvCostValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="@dimen/text_size_xl"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:textColor="?colorTertiary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TL"
+                        android:textSize="@dimen/text_size_xs"
+                        android:textColor="?colorOnSurfaceVariant" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <!-- Solar kWh Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_12"
+            app:cardCornerRadius="@dimen/corner_medium"
+            app:cardElevation="@dimen/card_elevation"
+            app:strokeWidth="@dimen/card_stroke_width"
+            app:strokeColor="?colorOutline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bugunun Solar Uretimi"
+                    android:textSize="@dimen/text_size_sm"
+                    android:textColor="?colorOnSurfaceVariant"
+                    android:layout_marginBottom="@dimen/spacing_4" />
+
+                <TextView
+                    android:id="@+id/tvSolarKwh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.000 kWh"
+                    android:textSize="@dimen/text_size_2xl"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textColor="?colorSecondary" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Weekly CO2 Summary Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16"
+            app:cardCornerRadius="@dimen/corner_medium"
+            app:cardElevation="@dimen/card_elevation"
+            app:strokeWidth="@dimen/card_stroke_width"
+            app:strokeColor="?colorOutline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Haftalik Ozet"
+                    android:textSize="@dimen/text_size_base"
+                    android:textStyle="bold"
+                    android:textColor="?colorOnSurface"
+                    android:layout_marginBottom="@dimen/spacing_8" />
+
+                <TextView
+                    android:id="@+id/tvWeeklyCo2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bu hafta: 0.00 kg CO2 tasarruf"
+                    android:textSize="@dimen/text_size_sm"
+                    android:textColor="?colorPrimary"
+                    android:fontFamily="monospace" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

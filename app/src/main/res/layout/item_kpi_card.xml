@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/corner_large"
+    app:cardElevation="@dimen/card_elevation"
+    app:strokeWidth="@dimen/card_stroke_width"
+    app:strokeColor="?colorOutline">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_16">
+
+        <TextView
+            android:id="@+id/tvKpiLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tuketim"
+            android:textSize="@dimen/text_size_xs"
+            android:textColor="?colorOnSurfaceVariant" />
+
+        <TextView
+            android:id="@+id/tvKpiValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textSize="@dimen/text_size_2xl"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:textColor="?colorOnSurface"
+            android:layout_marginTop="@dimen/spacing_4"
+            android:layout_marginBottom="@dimen/spacing_2" />
+
+        <TextView
+            android:id="@+id/tvKpiUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wh"
+            android:textSize="@dimen/text_size_xs"
+            android:textColor="?colorOnSurfaceVariant" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

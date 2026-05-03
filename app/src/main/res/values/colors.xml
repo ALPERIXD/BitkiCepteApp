@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_green">#1B5E20</color>
+    <color name="brand_green_600">#43A047</color>
+    <color name="brand_green_300">#A5D6A7</color>
+    <color name="brand_green_50">#D7F0CC</color>
+    <color name="sun_yellow">#F9A825</color>
+    <color name="sun_yellow_600">#FFB300</color>
+    <color name="sun_yellow_50">#FFF8E1</color>
+    <color name="tech_blue">#1976D2</color>
+    <color name="tech_blue_600">#1E88E5</color>
+    <color name="tech_blue_50">#E3F2FD</color>
+    <color name="warn_orange">#EF6C00</color>
+    <color name="warn_orange_50">#FFF3E0</color>
+    <color name="color_ok">#2E7D32</color>
+    <color name="color_warn">#EF6C00</color>
+    <color name="color_bad">#C62828</color>
+    <!-- LIGHT THEME -->
+    <color name="bg_light">#ECF7DC</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_2_light">#FAFCF6</color>
+    <color name="surface_3_light">#F1F4EB</color>
+    <color name="outline_light">#D6DCC9</color>
+    <color name="outline_2_light">#E7ECDB</color>
+    <color name="text_primary_light">#1A1A1A</color>
+    <color name="text_secondary_light">#4A5147</color>
+    <color name="text_tertiary_light">#7A8278</color>
+    <!-- DARK THEME -->
+    <color name="bg_dark">#07131F</color>
+    <color name="surface_dark">#14243C</color>
+    <color name="surface_2_dark">#1E2C44</color>
+    <color name="surface_3_dark">#243352</color>
+    <color name="outline_dark">#2A3A56</color>
+    <color name="outline_2_dark">#213149</color>
+    <color name="text_primary_dark">#E0E0E0</color>
+    <color name="text_secondary_dark">#A8B3C2</color>
+    <color name="text_tertiary_dark">#6B7889</color>
+    <color name="brand_green_dark">#66BB6A</color>
+    <color name="brand_green_50_dark">#1A3D1C</color>
+    <color name="sun_yellow_dark">#FFCA28</color>
+    <color name="sun_yellow_50_dark">#2A2200</color>
+    <color name="tech_blue_dark">#42A5F5</color>
+    <color name="tech_blue_50_dark">#0D1F36</color>
+    <color name="warn_orange_dark">#FFA726</color>
+    <!-- Eski renk referansları için alias (geriye dönük uyumluluk) -->
+    <color name="primary_green">#2E7D32</color>
+    <color name="primary_green_light">#66BB6A</color>
+    <color name="primary_green_dark">#1B5E20</color>
+    <color name="solar_yellow">#F9A825</color>
+    <color name="tech_blue_alias">#1976D2</color>
+    <color name="bg_app">#ECF7DC</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#4A5147</color>
+    <color name="accent_red">#C62828</color>
+    <color name="accent_orange">#EF6C00</color>
+    <color name="on_primary">#FFFFFF</color>
+</resources>
