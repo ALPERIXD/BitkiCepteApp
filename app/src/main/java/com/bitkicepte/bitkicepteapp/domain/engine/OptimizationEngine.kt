@@ -9,11 +9,14 @@ import com.bitkicepte.bitkicepteapp.data.local.entity.PlantProfile
  * Karar motoru — saf Kotlin, Android bağımlılığı yok, test edilebilir.
  *
  * Akıllı Mod algoritmaları:
- *   1. Predictive Ventilation: Dışarısı serinleyecekse fan bekleme
- *   2. DLI Lighting          : Günlük ışık integrali eksiğini LED ile kapat
- *   3. VPD Irrigation        : Transpirasyon ihtiyacına göre sulama (PWM)
- *   4. VPD Fan Control       : Fanı VPD aralığına sokmak için kullan
- *   5. Anti-pattern          : Çakışan komutları engelle
+ *   1. Predictive Ventilation       : Dışarısı serinleyecekse fan bekleme
+ *   2. DLI Lighting                 : Günlük ışık integrali eksiğini LED ile kapat
+ *   3. VPD Irrigation               : Transpirasyon ihtiyacına göre sulama (PWM)
+ *   4. VPD Fan Control              : Fanı VPD aralığına sokmak için kullan
+ *   5. Anti-pattern                 : Çakışan komutları engelle
+ *   6. Dynamic Priority — Kritik Bitki Koruma:
+ *      Sıcaklık bitkinin tempMinC'sine CRITICAL_TEMP_MARGIN kadar yaklaşınca
+ *      fan tamamen kapatılır (soğutma yerine koruma öncelikli).
  *
  * Not: Isıtıcı donanımdan çıkarıldı. Fan soğutma/havalandırma için kullanılıyor.
  * Otomatik Mod: basit eşik tabanlı — bitki profili parametrelerini kullanır.
@@ -22,11 +25,14 @@ object OptimizationEngine {
 
     // Fallback sabitler (profil seçilmemişse)
     private const val FALLBACK_TEMP_MAX   = 28f
+    private const val FALLBACK_TEMP_MIN   = 15f
     private const val FALLBACK_SOIL_MIN   = 35f
     private const val FALLBACK_TARGET_DLI = 15f
     private const val FALLBACK_VPD_MIN    = 0.8f
     private const val FALLBACK_VPD_MAX    = 1.5f
     private const val HUM_MAX_HARD        = 85f  // nem bu değeri aşarsa her zaman fan
+    // Kritik koruma: bitkinin min sıcaklığına bu kadar yaklaşınca fan kapatılır
+    private const val CRITICAL_TEMP_MARGIN = 2f
 
     data class Result(val state: ActuatorState, val reasons: List<String>)
 
@@ -42,15 +48,29 @@ object OptimizationEngine {
         var fan = 0; var led = 0; var pump = 0
 
         val tempMax   = profile?.tempMaxC       ?: FALLBACK_TEMP_MAX
+        val tempMin   = profile?.tempMinC       ?: FALLBACK_TEMP_MIN
         val soilMin   = profile?.soilMinPercent ?: FALLBACK_SOIL_MIN
         val targetDli = profile?.targetDli      ?: FALLBACK_TARGET_DLI
         val vpdMin    = profile?.vpdMin         ?: FALLBACK_VPD_MIN
         val vpdMax    = profile?.vpdMax         ?: FALLBACK_VPD_MAX
         val vpd       = sensor.vpd
 
+        // 6. DYNAMIC PRIORITY — Kritik Bitki Koruma (önce kontrol et, fan kararını etkiler)
+        // Sıcaklık bitkinin tolerans alt sınırına CRITICAL_TEMP_MARGIN içindeyse fan kapalı tut
+        val nearColdLimit = sensor.temperatureC <= tempMin + CRITICAL_TEMP_MARGIN
+        val forecastCold  = forecastTemp3h != null && forecastTemp3h <= tempMin + CRITICAL_TEMP_MARGIN
+        val criticalColdProtection = nearColdLimit || forecastCold
+        if (criticalColdProtection) {
+            val source = if (forecastCold && !nearColdLimit)
+                "Tahmin ${forecastTemp3h?.let { "%.1f".format(it) }}°C" else
+                "Anlık ${sensor.temperatureC.f1()}°C"
+            reasons += "DYNAMIC_PRIORITY: $source ≤ ${(tempMin + CRITICAL_TEMP_MARGIN).f1()}°C " +
+                       "(${profile?.name ?: "bitki"} min ${tempMin.f1()}°C) → Fan kapalı, bitki korunuyor"
+        }
+
         // 1. PREDICTIVE VENTILATION
         val coolingComing = forecastTemp3h != null && forecastTemp3h < sensor.temperatureC - 3f
-        if (sensor.temperatureC > tempMax) {
+        if (!criticalColdProtection && sensor.temperatureC > tempMax) {
             fan = if (coolingComing) {
                 reasons += "PREDICTIVE_VENT: Dış sıcaklık düşüyor (${forecastTemp3h}°C) → Fan %30"
                 30
@@ -89,8 +109,8 @@ object OptimizationEngine {
             }
         }
 
-        // 4. VPD FAN CONTROL
-        if (fan == 0) {
+        // 4. VPD FAN CONTROL (kritik soğuk koruma aktifse fan açılmaz)
+        if (fan == 0 && !criticalColdProtection) {
             when {
                 vpd < vpdMin && sensor.humidityPercent > HUM_MAX_HARD -> {
                     fan = 50

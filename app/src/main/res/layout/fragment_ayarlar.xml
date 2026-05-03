@@ -269,6 +269,21 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Kurulum Maliyeti (TL) — ROI hesabı için"
+                    android:layout_marginBottom="@dimen/spacing_8">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etInstallCost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:text="5000" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

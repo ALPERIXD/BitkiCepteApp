@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Damla dış -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M12,2C12,2 5,10.5 5,15C5,18.87 8.13,22 12,22C15.87,22 19,18.87 19,15C19,10.5 12,2 12,2Z"/>
+    <!-- Damla parlama efekti -->
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M9,13.5C9,11.8 10.2,10.3 12,9C12,9 9,12 9,13.5Z"/>
+    <!-- Yüzde işareti -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9.5,17L15,13L14,12L8.5,16ZM9.75,13.5C9.75,14.19 9.19,14.75 8.5,14.75C7.81,14.75 7.25,14.19 7.25,13.5C7.25,12.81 7.81,12.25 8.5,12.25C9.19,12.25 9.75,12.81 9.75,13.5ZM16.75,16.5C16.75,17.19 16.19,17.75 15.5,17.75C14.81,17.75 14.25,17.19 14.25,16.5C14.25,15.81 14.81,15.25 15.5,15.25C16.19,15.25 16.75,15.81 16.75,16.5Z"/>
+</vector>

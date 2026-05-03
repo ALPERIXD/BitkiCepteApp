@@ -61,9 +61,26 @@ class HomeFragment : Fragment() {
         bSoil.tvSensorLabel.text  = "Toprak Nemi"; bSoil.tvSensorUnit.text  = "%"
         bLight.tvSensorLabel.text = "Isik";         bLight.tvSensorUnit.text = "lux"
 
+        // İkonlar ve arka plan renkleri
+        bTemp.ivSensorIcon.setImageResource(R.drawable.ic_thermometer)
+        bTemp.flIconBox.setBackgroundResource(R.drawable.bg_icon_box_orange)
+
+        bHum.ivSensorIcon.setImageResource(R.drawable.ic_humidity)
+        bHum.flIconBox.setBackgroundResource(R.drawable.bg_icon_box_blue)
+
+        bSoil.ivSensorIcon.setImageResource(R.drawable.ic_soil)
+        bSoil.flIconBox.setBackgroundResource(R.drawable.bg_icon_box_green)
+
+        bLight.ivSensorIcon.setImageResource(R.drawable.ic_light)
+        bLight.flIconBox.setBackgroundResource(R.drawable.bg_icon_box_orange)
+
         bFan.tvActuatorLabel.text  = "Fan (PWM)"
         bLed.tvActuatorLabel.text  = "LED Grow (PWM)"
         bPump.tvActuatorLabel.text = "Su Pompasi (PWM)"
+
+        bFan.ivActuatorIcon.setImageResource(R.drawable.ic_fan)
+        bLed.ivActuatorIcon.setImageResource(R.drawable.ic_led)
+        bPump.ivActuatorIcon.setImageResource(R.drawable.ic_pump)
 
         setupConnect()
         setupModeToggle()
@@ -188,13 +205,15 @@ class HomeFragment : Fragment() {
                 launch {
                     vm.actuatorState.collect { state ->
                         suppressActuator = true
-                        bFan.sliderActuator.value  = state.fanDuty.toFloat()
-                        bFan.switchActuator.isChecked  = state.fanOn
-                        bLed.sliderActuator.value  = state.ledDuty.toFloat()
-                        bLed.switchActuator.isChecked  = state.ledOn
-                        bPump.sliderActuator.value = state.pumpDuty.toFloat()
-                        bPump.switchActuator.isChecked = state.pumpOn
-                        suppressActuator = false
+                        requireView().post {
+                            bFan.sliderActuator.value      = state.fanDuty.toFloat()
+                            bFan.switchActuator.isChecked  = state.fanOn
+                            bLed.sliderActuator.value      = state.ledDuty.toFloat()
+                            bLed.switchActuator.isChecked  = state.ledOn
+                            bPump.sliderActuator.value     = state.pumpDuty.toFloat()
+                            bPump.switchActuator.isChecked = state.pumpOn
+                            suppressActuator = false
+                        }
                     }
                 }
 

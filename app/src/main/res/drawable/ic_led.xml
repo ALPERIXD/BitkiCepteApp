@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Ampul gövdesi -->
+    <path
+        android:fillColor="#F9A825"
+        android:pathData="M12,2C8.69,2 6,4.69 6,8C6,10.22 7.19,12.16 9,13.2V15C9,15.55 9.45,16 10,16H14C14.55,16 15,15.55 15,15V13.2C16.81,12.16 18,10.22 18,8C18,4.69 15.31,2 12,2Z"/>
+    <!-- Ampul alt kısmı (duy) -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M10,17H14V18.5C14,19.33 13.33,20 12.5,20H11.5C10.67,20 10,19.33 10,18.5V17Z"/>
+    <!-- İç filaman -->
+    <path
+        android:fillColor="#FFF8E1"
+        android:pathData="M10.5,8L10.5,12M13.5,8L13.5,12M10.5,10L13.5,10"
+        android:strokeColor="#FFF8E1"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"/>
+    <!-- Parlaklık çizgileri -->
+    <path
+        android:fillColor="#FDD835"
+        android:pathData="M12,0.5L12,2M5.5,3L6.5,4.1M18.5,3L17.5,4.1M3,8L4.5,8M21,8L19.5,8"
+        android:strokeColor="#FDD835"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"/>
+    <!-- Alt vida çizgileri -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M10,16H14V16.5H10ZM10.2,18H13.8V18.5H10.2Z"/>
+</vector>

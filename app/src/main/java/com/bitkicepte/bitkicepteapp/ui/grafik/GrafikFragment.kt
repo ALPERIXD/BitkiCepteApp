@@ -13,14 +13,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bitkicepte.bitkicepteapp.R
 import com.bitkicepte.bitkicepteapp.data.local.entity.SensorReading
 import com.bitkicepte.bitkicepteapp.databinding.FragmentGrafikBinding
-import com.bitkicepte.bitkicepteapp.ui.shared.SharedViewModel
 import com.bitkicepte.bitkicepteapp.domain.engine.EnergyEstimator
+import com.bitkicepte.bitkicepteapp.ui.shared.SharedViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class GrafikFragment : Fragment() {
@@ -29,8 +29,8 @@ class GrafikFragment : Fragment() {
     private val binding get() = _binding!!
     private val vm: SharedViewModel by activityViewModels()
 
-    // Secili aralik: 1=1saat, 24=24saat, 168=7gun (saat cinsinden)
-    private var selectedHours = 1
+    private var selectedMode = "LIVE"
+    private var liveJob: Job? = null
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         _binding = FragmentGrafikBinding.inflate(i, c, false)
@@ -41,109 +41,179 @@ class GrafikFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupCharts()
         setupTimeFilter()
-        loadData()
+        setupResetButton()
+        startLiveMode()
     }
 
-    private fun setupTimeFilter() {
-        binding.toggleTime.check(R.id.btn1h)
-        binding.toggleTime.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked) return@addOnButtonCheckedListener
-            selectedHours = when (checkedId) {
-                R.id.btn1h  -> 1
-                R.id.btn24h -> 24
-                R.id.btn7d  -> 168
-                else -> 1
-            }
-            loadData()
+    // ── Sıfırlama butonu ──────────────────────────────────────────────────
+
+    private fun setupResetButton() {
+        binding.btnResetData.setOnClickListener {
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Verileri Sıfırla")
+                .setMessage("Tüm sensör, enerji ve grafik verileri silinecek. Emin misin?")
+                .setPositiveButton("Sıfırla") { _, _ ->
+                    vm.resetAllData()
+                    clearCharts()
+                }
+                .setNegativeButton("Vazgeç", null)
+                .show()
         }
     }
 
+    // ── Tab seçimi ────────────────────────────────────────────────────────
+
+    private fun setupTimeFilter() {
+        binding.toggleTime.check(R.id.btnLive)
+        binding.toggleTime.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            liveJob?.cancel()
+            liveJob = null
+            selectedMode = when (checkedId) {
+                R.id.btnLive -> "LIVE"
+                R.id.btn24h  -> "24"
+                R.id.btn7d   -> "168"
+                else         -> "LIVE"
+            }
+            if (selectedMode == "LIVE") startLiveMode() else loadDbData()
+        }
+    }
+
+    // ── Canlı mod ─────────────────────────────────────────────────────────
+
+    private fun startLiveMode() {
+        // Buffer ViewModel'de yaşıyor — fragment geçişlerinde korunur
+        if (vm.liveBuffer.isNotEmpty()) renderLive()
+        liveJob = viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.sensorTick.collect { renderLive() }
+            }
+        }
+    }
+
+    private fun renderLive() {
+        if (vm.liveBuffer.isEmpty()) return
+        val t0 = vm.liveBuffer.first().timestamp
+
+        // X = saniye offseti (0'dan başlar, sola kayar)
+        fun toX(ts: Long) = ((ts - t0) / 1_000f)
+
+        updateChart(
+            binding.chartTempHum,
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), it.temperatureC) },    "Sicaklik °C", Color.parseColor("#E65100")),
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), it.humidityPercent) }, "Nem %",       Color.parseColor("#1565C0"))
+        )
+        updateChart(
+            binding.chartSoilLight,
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), it.soilMoisturePercent) }, "Toprak %", Color.parseColor("#2E7D32")),
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), it.luxValue / 10f) },      "Isik /10", Color.parseColor("#F9A825"))
+        )
+        updateChart(
+            binding.chartSolar,
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), it.solarPowerW) }, "Solar W", Color.parseColor("#F9A825"))
+        )
+        val state  = vm.actuatorState.value
+        val totalW = EnergyEstimator.fanWatts(state.fanDuty) +
+                     EnergyEstimator.ledWatts(state.ledDuty) +
+                     EnergyEstimator.pumpWatts(state.pumpDuty)
+        updateChart(
+            binding.chartConsumption,
+            lineSet(vm.liveBuffer.map { Entry(toX(it.timestamp), totalW) }, "Tuketim W", Color.parseColor("#1976D2"))
+        )
+    }
+
+    private fun updateChart(chart: LineChart, vararg sets: LineDataSet) {
+        chart.data = LineData(*sets)
+        chart.data.notifyDataChanged()
+        chart.notifyDataSetChanged()
+        chart.invalidate()
+    }
+
+    // ── DB modları ────────────────────────────────────────────────────────
+
+    private fun loadDbData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val hours = selectedMode.toIntOrNull() ?: 24
+            val since = System.currentTimeMillis() - hours * 3_600_000L
+            val readings: List<SensorReading> = if (hours <= 24)
+                vm.get15MinBuckets(since)
+            else
+                vm.get6HourBuckets(since)
+
+            if (readings.isEmpty()) { clearCharts(); return@launch }
+
+            val t0 = readings.first().timestamp
+            fun toX(ts: Long) = ((ts - t0) / 60_000f)  // dakika
+
+            updateChart(
+                binding.chartTempHum,
+                lineSet(readings.map { Entry(toX(it.timestamp), it.temperatureC) },    "Sicaklik °C", Color.parseColor("#E65100")),
+                lineSet(readings.map { Entry(toX(it.timestamp), it.humidityPercent) }, "Nem %",       Color.parseColor("#1565C0"))
+            )
+            updateChart(
+                binding.chartSoilLight,
+                lineSet(readings.map { Entry(toX(it.timestamp), it.soilMoisturePercent) }, "Toprak %", Color.parseColor("#2E7D32")),
+                lineSet(readings.map { Entry(toX(it.timestamp), it.luxValue / 10f) },      "Isik /10", Color.parseColor("#F9A825"))
+            )
+            updateChart(
+                binding.chartSolar,
+                lineSet(readings.map { Entry(toX(it.timestamp), it.solarPowerW) }, "Solar W", Color.parseColor("#F9A825"))
+            )
+            val state  = vm.actuatorState.value
+            val totalW = EnergyEstimator.fanWatts(state.fanDuty) +
+                         EnergyEstimator.ledWatts(state.ledDuty) +
+                         EnergyEstimator.pumpWatts(state.pumpDuty)
+            updateChart(
+                binding.chartConsumption,
+                lineSet(readings.map { Entry(toX(it.timestamp), totalW) }, "Tuketim W", Color.parseColor("#1976D2"))
+            )
+        }
+    }
+
+    // ── Yardımcılar ───────────────────────────────────────────────────────
+
     private fun setupCharts() {
         listOf(binding.chartTempHum, binding.chartSoilLight,
-               binding.chartSolar, binding.chartConsumption).forEach { chart ->
+               binding.chartSolar,  binding.chartConsumption).forEach { chart ->
             chart.apply {
-                description.isEnabled = false
-                legend.isEnabled = true
+                description.isEnabled  = false
+                legend.isEnabled       = true
                 setTouchEnabled(true)
-                isDragEnabled = true
+                isDragEnabled          = true
                 setScaleEnabled(true)
-                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                xAxis.position         = XAxis.XAxisPosition.BOTTOM
                 xAxis.setDrawGridLines(false)
-                xAxis.labelCount = 4
-                axisRight.isEnabled = false
-                axisLeft.gridColor = Color.parseColor("#22000000")
+                xAxis.labelCount       = 5
+                axisRight.isEnabled    = false
+                axisLeft.gridColor     = Color.parseColor("#22000000")
                 setNoDataText("Veri bekleniyor...")
             }
         }
     }
 
-    private fun loadData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val now = System.currentTimeMillis()
-            val since = now - selectedHours * 3_600_000L
-
-            val readings: List<SensorReading> = when (selectedHours) {
-                1    -> vm.getSensorSince(since)
-                24   -> vm.get15MinBuckets(since)
-                else -> vm.get6HourBuckets(since)
-            }
-
-            if (readings.isEmpty()) return@launch
-
-            // X ekseni: dakika offseti (0 = en eski)
-            val t0 = readings.first().timestamp.toFloat()
-
-            fun toX(ts: Long) = (ts - t0) / 60_000f   // dakika
-
-            // Grafik 1: Sicaklik + Nem
-            val tempEntries = readings.map { Entry(toX(it.timestamp), it.temperatureC) }
-            val humEntries  = readings.map { Entry(toX(it.timestamp), it.humidityPercent) }
-            binding.chartTempHum.data = LineData(
-                lineSet(tempEntries, "Sicaklik", Color.parseColor("#E65100")),
-                lineSet(humEntries,  "Nem",      Color.parseColor("#1565C0"))
-            )
-            binding.chartTempHum.invalidate()
-
-            // Grafik 2: Toprak + Isik (lux/10 ile olceklenir)
-            val soilEntries  = readings.map { Entry(toX(it.timestamp), it.soilMoisturePercent) }
-            val lightEntries = readings.map { Entry(toX(it.timestamp), it.luxValue / 10f) }
-            binding.chartSoilLight.data = LineData(
-                lineSet(soilEntries,  "Toprak %",   Color.parseColor("#2E7D32")),
-                lineSet(lightEntries, "Isik /10",   Color.parseColor("#F9A825"))
-            )
-            binding.chartSoilLight.invalidate()
-
-            // Grafik 3: Solar W
-            val solarEntries = readings.map { Entry(toX(it.timestamp), it.solarPowerW) }
-            binding.chartSolar.data = LineData(lineSet(solarEntries, "Solar W", Color.parseColor("#F9A825")))
-            binding.chartSolar.invalidate()
-
-            // Grafik 4: Tahmini tuketim (son aktuator durumundan)
-            val state = vm.actuatorState.value
-            val totalW = EnergyEstimator.fanWatts(state.fanDuty) +
-                         EnergyEstimator.ledWatts(state.ledDuty) +
-                         EnergyEstimator.pumpWatts(state.pumpDuty)
-            val consEntries = readings.map { Entry(toX(it.timestamp), totalW) }
-            binding.chartConsumption.data = LineData(lineSet(consEntries, "Tuketim W", Color.parseColor("#1976D2")))
-            binding.chartConsumption.invalidate()
+    private fun clearCharts() {
+        listOf(binding.chartTempHum, binding.chartSoilLight,
+               binding.chartSolar,  binding.chartConsumption).forEach {
+            it.clear(); it.invalidate()
         }
     }
 
     private fun lineSet(entries: List<Entry>, label: String, color: Int): LineDataSet =
         LineDataSet(entries, label).apply {
             this.color = color
-            setDrawCircles(false)
+            setDrawCircles(entries.size <= 3)
+            circleRadius = 3f
+            setCircleColor(color)
             setDrawValues(false)
             lineWidth = 2f
-            mode = LineDataSet.Mode.CUBIC_BEZIER
-            setDrawFilled(false)
+            mode = LineDataSet.Mode.LINEAR
         }
 
-    /** MainActivity'den cagrilir - belirli sensor tipini on sece */
-    fun refreshFromArgs() { loadData() }
+    fun refreshFromArgs() { if (selectedMode == "LIVE") renderLive() else loadDbData() }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        liveJob?.cancel()
         _binding = null
     }
 }

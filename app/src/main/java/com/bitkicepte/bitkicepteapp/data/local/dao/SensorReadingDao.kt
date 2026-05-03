@@ -63,4 +63,7 @@ interface SensorReadingDao {
 
     @Query("DELETE FROM sensor_readings WHERE timestamp < :cutoff")
     suspend fun deleteOlderThan(cutoff: Long)
+
+    @Query("DELETE FROM sensor_readings")
+    suspend fun deleteAll()
 }

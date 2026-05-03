@@ -22,6 +22,15 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/spacing_8">
 
+            <ImageView
+                android:id="@+id/ivActuatorIcon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="@dimen/spacing_8"
+                android:src="@drawable/ic_fan"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter" />
+
             <TextView
                 android:id="@+id/tvActuatorLabel"
                 android:layout_width="0dp"

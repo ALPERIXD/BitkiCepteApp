@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Toprak zemin -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M2,16C2,16 4,14 7,14C10,14 10,16 13,16C16,16 16,14 19,14C21,14 22,15 22,15V22H2Z"/>
+    <!-- Çimen / bitki -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M12,13C12,13 10,10 10,8C10,6.34 11.34,5 13,5C13,5 13,9 12,13Z"/>
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M12,13C12,13 14,10 14,8C14,6.34 12.66,5 11,5C11,5 11,9 12,13Z"/>
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M12,14C12,14 9.5,11.5 8,10C6.5,8.5 7,6 8.5,5C8.5,5 10.5,9.5 12,14Z"/>
+    <!-- Toprak nemi damlaları -->
+    <path
+        android:fillColor="#42A5F5"
+        android:pathData="M5,18C5,18.83 5.67,19.5 6.5,19.5C7.33,19.5 8,18.83 8,18C8,17 6.5,15.5 6.5,15.5C6.5,15.5 5,17 5,18Z"/>
+    <path
+        android:fillColor="#42A5F5"
+        android:pathData="M15,18C15,18.83 15.67,19.5 16.5,19.5C17.33,19.5 18,18.83 18,18C18,17 16.5,15.5 16.5,15.5C16.5,15.5 15,17 15,18Z"/>
+</vector>

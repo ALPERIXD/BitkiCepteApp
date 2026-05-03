@@ -42,6 +42,7 @@ class EnerjiFragment : Fragment() {
 
         setupBarChart()
         setupPieChart()
+        setupResetButton()
 
         val dayStart = todayStartMs()
 
@@ -105,6 +106,17 @@ class EnerjiFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun setupResetButton() {
+        b.btnResetEnergy.setOnClickListener {
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Verileri Sıfırla")
+                .setMessage("Tüm sensör, enerji ve grafik verileri silinecek. Emin misin?")
+                .setPositiveButton("Sıfırla") { _, _ -> vm.resetAllData() }
+                .setNegativeButton("Vazgeç", null)
+                .show()
         }
     }
 

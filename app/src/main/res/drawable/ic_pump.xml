@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Pompa gövdesi -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M6,10H18C18,10 19,10 19,11V16C19,17 18,17 18,17H6C5,17 5,16 5,16V11C5,10 6,10 6,10Z"/>
+    <!-- Motor dairesi -->
+    <path
+        android:fillColor="#0D47A1"
+        android:pathData="M12,11.5A2,2 0,0 1,14 13.5A2,2 0,0 1,12 15.5A2,2 0,0 1,10 13.5A2,2 0,0 1,12 11.5Z"/>
+    <!-- Pompa çıkış borusu (üst) -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M10,10V8C10,7.45 10.45,7 11,7H13C13.55,7 14,7.45 14,8V10H10Z"/>
+    <!-- Pompa giriş borusu (sol) -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M2,12.5H5V14.5H2C1.45,14.5 1,14.05 1,13.5C1,12.95 1.45,12.5 2,12.5Z"/>
+    <!-- Pompa çıkış borusu (sağ) -->
+    <path
+        android:fillColor="#42A5F5"
+        android:pathData="M19,12.5H22C22.55,12.5 23,12.95 23,13.5C23,14.05 22.55,14.5 22,14.5H19V12.5Z"/>
+    <!-- Su damlacıkları -->
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M10,5C10,5.83 10.67,6.5 10.67,6.5C10.67,6.5 11.33,5.83 11.33,5C11.33,4.17 10.67,3.5 10.67,3.5C10.67,3.5 10,4.17 10,5Z"/>
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M12.67,5C12.67,5.83 13.33,6.5 13.33,6.5C13.33,6.5 14,5.83 14,5C14,4.17 13.33,3.5 13.33,3.5C13.33,3.5 12.67,4.17 12.67,5Z"/>
+    <!-- İç döner disk (impeller) -->
+    <path
+        android:fillColor="#BBDEFB"
+        android:pathData="M12,13C11.45,13 11,13.45 11,14C11,14.55 11.45,15 12,15C12.55,15 13,14.55 13,14C13,13.45 12.55,13 12,13Z"/>
+</vector>

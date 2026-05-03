@@ -74,6 +74,13 @@ abstract class AppDatabase : RoomDatabase() {
                 tempMinC = 15f, tempMaxC = 26f
             ),
             PlantProfile(
+                name = "Fesleğen",
+                targetDli = 20f,
+                vpdMin = 0.9f, vpdMax = 1.4f,
+                soilMinPercent = 45f,
+                tempMinC = 18f, tempMaxC = 30f
+            ),
+            PlantProfile(
                 name = "Genel Sera",
                 targetDli = 15f,
                 vpdMin = 0.8f, vpdMax = 1.5f,

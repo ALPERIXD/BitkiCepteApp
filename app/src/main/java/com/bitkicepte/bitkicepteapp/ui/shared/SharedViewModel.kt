@@ -13,11 +13,16 @@ import com.bitkicepte.bitkicepteapp.domain.engine.OptimizationEngine
 import com.bitkicepte.bitkicepteapp.domain.model.ActuatorState
 import com.bitkicepte.bitkicepteapp.domain.model.SensorData
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class SharedViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -32,7 +37,30 @@ class SharedViewModel(app: Application) : AndroidViewModel(app) {
     // ── Bağlantı ─────────────────────────────────────────────────────────
     val connected: StateFlow<Boolean> = repo.connected
     val latestSensor: StateFlow<SensorData?> = repo.latestSensor
+    val sensorTick: SharedFlow<SensorData> = repo.sensorTick
     val actuatorState: StateFlow<ActuatorState> = repo.actuatorState
+
+    // ── Canlı grafik buffer (fragment'tan bağımsız, 1 dakika pencere) ─────
+    val liveBuffer = ArrayDeque<SensorData>()
+    private val LIVE_WINDOW_MS = 60_000L
+
+    init {
+        repo.sensorTick.onEach { data ->
+            val now = System.currentTimeMillis()
+            liveBuffer.addLast(data)
+            while (liveBuffer.isNotEmpty() && now - liveBuffer.first().timestamp > LIVE_WINDOW_MS) {
+                liveBuffer.removeFirst()
+            }
+        }.launchIn(viewModelScope)
+
+        // Profil listesi yüklenince seçili profil hâlâ null ise ilk profili otomatik seç
+        viewModelScope.launch {
+            val profiles = allProfiles.filter { it.isNotEmpty() }.first()
+            if (_selectedProfile.value == null) {
+                _selectedProfile.value = profiles.first()
+            }
+        }
+    }
 
     private val _controlMode = MutableStateFlow(ControlMode.MANUAL)
     val controlMode: StateFlow<ControlMode> = _controlMode.asStateFlow()
@@ -60,7 +88,9 @@ class SharedViewModel(app: Application) : AndroidViewModel(app) {
 
     fun selectProfile(profile: PlantProfile) {
         _selectedProfile.value = profile
-        // Profil değişince aktif modda kararı yeniden çalıştır
+        // Profili ESP32'ye de gönder (kendi karar motoru kullansın)
+        viewModelScope.launch { repo.sendProfile(profile) }
+        // Aktif modda kararı yeniden çalıştır
         when (_controlMode.value) {
             ControlMode.SMART -> runSmartDecision()
             ControlMode.AUTO  -> runAutoDecision()
@@ -72,8 +102,9 @@ class SharedViewModel(app: Application) : AndroidViewModel(app) {
     private var dliAccumulated = 0f
     private var lastDliTs = System.currentTimeMillis()
 
-    // Open-Meteo 3 saatlik sıcaklık tahmini
-    var forecastTemp3h: Float? = null
+    // Hava tahmini: ESP32'den TCP paketiyle gelir (repo.forecastTemp3h)
+    private val forecastTemp3h: Float?
+        get() = repo.forecastTemp3h.value
 
     // Son karar sebebi (AUTO ve SMART için)
     private val _smartReason = MutableStateFlow("")
@@ -91,6 +122,11 @@ class SharedViewModel(app: Application) : AndroidViewModel(app) {
     fun disconnect() {
         repo.disconnect()
         WiFiTcpForegroundService.stop(getApplication())
+    }
+
+    fun resetAllData() {
+        liveBuffer.clear()
+        viewModelScope.launch { repo.resetAllData() }
     }
 
     // ── Mod ──────────────────────────────────────────────────────────────

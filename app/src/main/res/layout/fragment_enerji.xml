@@ -13,14 +13,33 @@
         android:padding="@dimen/spacing_16">
 
         <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enerji Analizi"
-            android:textSize="@dimen/text_size_xl"
-            android:textStyle="bold"
-            android:textColor="?colorPrimary"
-            android:layout_marginBottom="@dimen/spacing_16" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/spacing_16">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Enerji Analizi"
+                android:textSize="@dimen/text_size_xl"
+                android:textStyle="bold"
+                android:textColor="?colorPrimary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnResetEnergy"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sifirla"
+                android:textSize="12sp"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconSize="16dp" />
+
+        </LinearLayout>
 
         <!-- KPI Row: Consumption + Solar -->
         <LinearLayout

@@ -18,4 +18,7 @@ interface ActuatorEventDao {
 
     @Query("DELETE FROM actuator_events WHERE timestamp < :cutoff")
     suspend fun deleteOlderThan(cutoff: Long)
+
+    @Query("DELETE FROM actuator_events")
+    suspend fun deleteAll()
 }

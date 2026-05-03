@@ -8,6 +8,8 @@ import com.bitkicepte.bitkicepteapp.data.local.entity.ActuatorType
 import com.bitkicepte.bitkicepteapp.data.local.entity.ControlMode
 import com.bitkicepte.bitkicepteapp.data.local.entity.EnergyReading
 import com.bitkicepte.bitkicepteapp.data.local.entity.SensorReading
+import com.bitkicepte.bitkicepteapp.data.local.entity.PlantProfile
+import com.bitkicepte.bitkicepteapp.data.network.Esp32Packet
 import com.bitkicepte.bitkicepteapp.data.network.TcpSocketService
 import com.bitkicepte.bitkicepteapp.domain.engine.EnergyEstimator
 import com.bitkicepte.bitkicepteapp.domain.model.ActuatorState
@@ -16,8 +18,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -37,8 +42,16 @@ class GreenhouseRepository(
     private val _latestSensor = MutableStateFlow<SensorData?>(null)
     val latestSensor: StateFlow<SensorData?> = _latestSensor.asStateFlow()
 
+    // Her pakette mutlaka emit eder (StateFlow'un duplicate-skip sorununu aşar)
+    private val _sensorTick = MutableSharedFlow<SensorData>(extraBufferCapacity = 64)
+    val sensorTick: SharedFlow<SensorData> = _sensorTick.asSharedFlow()
+
     private val _actuatorState = MutableStateFlow(ActuatorState())
     val actuatorState: StateFlow<ActuatorState> = _actuatorState.asStateFlow()
+
+    // ESP32'den gelen hava tahmini (null = henüz alınmadı)
+    private val _forecastTemp3h = MutableStateFlow<Float?>(null)
+    val forecastTemp3h: StateFlow<Float?> = _forecastTemp3h.asStateFlow()
 
     // ── Dahili ──────────────────────────────────────────────────────────
     private var dataJob: Job? = null
@@ -67,10 +80,14 @@ class GreenhouseRepository(
     private fun startCollection() {
         dataJob?.cancel()
         dataJob = scope.launch {
-            tcp.dataStream().collect { data ->
+            tcp.dataStream().collect { result ->
+                val data = result.sensorData
                 _latestSensor.value = data
+                _sensorTick.emit(data)
                 persistSensor(data)
                 updateEnergy(data)
+                // ESP32'den gelen tahmin varsa güncelle
+                result.forecastTemp3h?.let { _forecastTemp3h.value = it }
             }
         }
     }
@@ -105,6 +122,10 @@ class GreenhouseRepository(
 
     // ── Aktüatör ─────────────────────────────────────────────────────────
 
+    suspend fun sendProfile(profile: PlantProfile) {
+        if (tcp.isConnected) tcp.sendProfile(profile)
+    }
+
     suspend fun setActuatorState(state: ActuatorState, reason: String = "") {
         _actuatorState.value = state
         if (tcp.isConnected) tcp.sendCommand(state)
@@ -135,6 +156,13 @@ class GreenhouseRepository(
     suspend fun get15MinBuckets(since: Long)         = sensorDao.get15MinBuckets(since)
     suspend fun get6HourBuckets(since: Long)         = sensorDao.get6HourBuckets(since)
     suspend fun getTodayBreakdown(dayStart: Long)    = energyDao.getTodayBreakdown(dayStart)
+
+    suspend fun resetAllData() {
+        sensorDao.deleteAll()
+        energyDao.deleteAll()
+        energyDao.deleteAllSummary()
+        actuatorDao.deleteAll()
+    }
 
     private fun cleanOldData() {
         val cutoff = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7)

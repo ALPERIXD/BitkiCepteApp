@@ -46,6 +46,7 @@ class AyarlarFragment : Fragment() {
         b.etHumMax.setText(prefs.getFloat("hum_max", 80f).toString())
         b.etSoilMin.setText(prefs.getFloat("soil_min", 30f).toString())
         b.etPrice.setText(prefs.getFloat("price_tl", 4.60f).toString())
+        b.etInstallCost.setText(prefs.getFloat("install_cost_tl", 5000f).toString())
 
         // Profil listesi
         viewLifecycleOwner.lifecycleScope.launch {
@@ -113,6 +114,7 @@ class AyarlarFragment : Fragment() {
                 putFloat("hum_max", b.etHumMax.text.toString().toFloatOrNull() ?: 80f)
                 putFloat("soil_min", b.etSoilMin.text.toString().toFloatOrNull() ?: 30f)
                 putFloat("price_tl", b.etPrice.text.toString().toFloatOrNull() ?: 4.60f)
+                putFloat("install_cost_tl", b.etInstallCost.text.toString().toFloatOrNull() ?: 5000f)
             }.apply()
             Toast.makeText(requireContext(), "Kaydedildi", Toast.LENGTH_SHORT).show()
         }

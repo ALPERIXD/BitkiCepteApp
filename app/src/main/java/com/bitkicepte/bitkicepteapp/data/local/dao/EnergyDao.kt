@@ -49,6 +49,12 @@ interface EnergyDao {
 
     @Query("DELETE FROM energy_readings WHERE timestamp < :cutoff")
     suspend fun deleteOlderThan(cutoff: Long)
+
+    @Query("DELETE FROM energy_readings")
+    suspend fun deleteAll()
+
+    @Query("DELETE FROM energy_daily_summary")
+    suspend fun deleteAllSummary()
 }
 
 data class EnergyBreakdown(
